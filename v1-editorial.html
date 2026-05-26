@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>价目册 · V1 文房</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>window.APP_VARIANT = "editorial";</script>
+<style>
+  :root {
+    --paper: #f4efe4;
+    --paper-2: #ebe5d6;
+    --card: #fbf8f0;
+    --ink: #1c1813;
+    --ink-2: #3d362c;
+    --muted: #8a8170;
+    --line: #d8cfb9;
+    --line-soft: #e6dec9;
+    --accent: #b8472a;
+    --accent-soft: #f3dccf;
+    --gold: #a8801f;
+    --good: #4a6a3a;
+    --danger: #a8392c;
+    --radius: 2px;
+    --radius-lg: 4px;
+    --focus: 0 0 0 3px rgba(184, 71, 42, 0.18);
+    --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "Times New Roman", serif;
+    --sans: "Inter", "PingFang SC", "HarmonyOS Sans", "Microsoft YaHei", system-ui, sans-serif;
+    --mono: "JetBrains Mono", "SF Mono", "IBM Plex Mono", ui-monospace, monospace;
+    --pad: 28px;
+    --row-h: 44px;
+  }
+  [data-density="compact"] { --pad: 18px; --row-h: 36px; }
+  [data-density="cozy"]    { --pad: 36px; --row-h: 52px; }
+  [data-theme="dark"] {
+    --paper: #161310;
+    --paper-2: #1d1915;
+    --card: #1f1b16;
+    --ink: #ece4d2;
+    --ink-2: #c8bfac;
+    --muted: #8a8170;
+    --line: #34302a;
+    --line-soft: #2a2620;
+    --accent-soft: #3b231a;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 800px 400px at 80% -10%, rgba(184,71,42,0.06), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 10% 100%, rgba(168,128,31,0.05), transparent 60%);
+    background-attachment: fixed;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { border: 0; cursor: pointer; background: transparent; }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ── Masthead ───────────────────────────── */
+  .masthead {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 40px var(--pad) 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    border-bottom: 1px solid var(--ink);
+    position: relative;
+  }
+  .masthead::after {
+    content: "";
+    position: absolute;
+    left: var(--pad); right: var(--pad); bottom: -4px;
+    height: 1px;
+    background: var(--ink);
+  }
+  .masthead h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(34px, 4vw, 52px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .masthead .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .masthead .kicker::after { content: ""; width: 28px; height: 1px; background: var(--muted); display: inline-block; }
+  .masthead .dateline {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.5;
+  }
+  .masthead .dateline strong {
+    display: block;
+    font-style: normal;
+    font-family: var(--mono);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* ── App grid ───────────────────────────── */
+  .app {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 24px var(--pad) 80px;
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    gap: 36px;
+  }
+  .main { display: grid; gap: 28px; min-width: 0; }
+
+  /* ── Sidebar (input) ───────────────────────────── */
+  .sidebar {
+    align-self: start;
+    position: sticky;
+    top: 24px;
+  }
+  .sidebar .brand {
+    display: none; /* moved to masthead */
+  }
+  .sidebar form { display: grid; gap: 16px; }
+  .section-rule {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .section-rule::after {
+    content: ""; flex: 1; height: 1px; background: var(--line);
+  }
+
+  .field { display: grid; gap: 6px; min-width: 0; }
+  .field label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+  input, select {
+    width: 100%;
+    height: 38px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0 12px;
+    outline: 0;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  input::placeholder { color: var(--muted); opacity: 0.7; }
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: var(--focus);
+  }
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 32px; }
+
+  .unit-input {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: stretch;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .unit-input:focus-within { border-color: var(--accent); box-shadow: var(--focus); }
+  .unit-input input { border: 0; box-shadow: none !important; background: transparent; }
+  .unit-suffix {
+    padding: 0 12px;
+    display: flex; align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    border-left: 1px solid var(--line);
+    background: var(--paper-2);
+    white-space: nowrap;
+  }
+
+  /* ── Source rows (channel input) ───────────────────── */
+  .source-table {
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .source-header {
+    display: grid;
+    grid-template-columns: 1.1fr 0.7fr 0.7fr 0.85fr 28px 28px;
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .source-header span:nth-child(5),
+  .source-header span:nth-child(6) { text-align: center; }
+  .source-row {
+    display: grid;
+    grid-template-columns: 1.1fr 0.7fr 0.7fr 0.85fr 28px 28px;
+    gap: 8px;
+    padding: 8px 12px;
+    align-items: center;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .source-row:last-child { border-bottom: 0; }
+  .source-row .field { margin: 0; }
+  .source-row label { display: none; }
+  .source-row input {
+    height: 30px;
+    padding: 0 8px;
+    font-size: 13px;
+    background: transparent;
+    border-color: transparent;
+    border-radius: 0;
+  }
+  .source-row input:focus { background: var(--card); border-color: var(--accent); }
+  .source-row input[data-field="totalPrice"],
+  .source-row input[data-field="baseAmount"],
+  .source-row input[data-field="bonusAmount"] { font-family: var(--mono); }
+  .source-note {
+    grid-column: 1 / -1;
+    padding: 0;
+  }
+  .source-note.hidden { display: none; }
+  .source-note input { background: var(--paper-2); border-color: var(--line); padding: 0 10px; }
+  .note-toggle, .remove-source {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--muted);
+    transition: background .15s, color .15s;
+  }
+  .note-toggle:hover { background: var(--accent-soft); color: var(--accent); }
+  .note-toggle.active { color: var(--accent); }
+  .remove-source:hover { background: var(--accent-soft); color: var(--accent); }
+
+  /* ── Action buttons ───────────────────────────── */
+  .actions {
+    display: grid;
+    grid-template-columns: 38px 1fr;
+    gap: 10px;
+  }
+  .primary-btn {
+    height: 42px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius);
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    transition: background .15s, transform .1s;
+  }
+  .primary-btn:hover { background: var(--accent); }
+  .primary-btn:active { transform: translateY(1px); }
+  .icon-btn, .ghost-btn {
+    height: 42px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    border-radius: var(--radius);
+    background: transparent;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    font-weight: 500;
+    font-size: 13px;
+    transition: background .15s, color .15s;
+  }
+  .icon-btn:hover, .ghost-btn:hover { background: var(--ink); color: var(--paper); }
+  .ghost-btn { padding: 0 14px; }
+
+  #fillExample {
+    width: 100%;
+    height: 36px;
+    border: 1px dashed var(--line);
+    color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    background: transparent;
+    border-radius: var(--radius);
+    transition: color .15s, border-color .15s;
+  }
+  #fillExample:hover { color: var(--accent); border-color: var(--accent); }
+
+  .error {
+    min-height: 18px;
+    font-size: 12px;
+    color: var(--accent);
+    font-style: italic;
+  }
+  .hint {
+    margin: 16px 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    border-left: 2px solid var(--line);
+    padding-left: 12px;
+  }
+
+  /* ── Main panels ───────────────────────────── */
+  .panel { background: transparent; }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .product-tabs {
+    display: flex; gap: 4px; flex-wrap: wrap; min-width: 0;
+  }
+  .tab {
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 500;
+    transition: color .15s, border-color .15s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+  .toolbar-actions { display: flex; gap: 8px; }
+  .toolbar-actions .ghost-btn { height: 32px; font-size: 12px; padding: 0 12px; border: 1px solid var(--line); color: var(--ink-2); }
+  .toolbar-actions .ghost-btn:hover { border-color: var(--ink); }
+
+  /* ── Hero summary ───────────────────────────── */
+  .summary {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .metric {
+    padding: 24px 24px;
+    border-right: 1px solid var(--line-soft);
+    min-width: 0;
+  }
+  .metric:last-child { border-right: 0; }
+  .metric span {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .metric strong {
+    display: block;
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .metric:nth-child(3) strong {
+    color: var(--accent);
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .metric:first-child {
+    background: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
+    color: var(--paper);
+  }
+  .metric:first-child span { color: rgba(255,255,255,0.5); }
+  .metric:first-child strong { color: var(--paper); font-size: 32px; }
+  [data-theme="dark"] .metric:first-child { background: linear-gradient(135deg, var(--accent) 0%, #8a3520 100%); }
+
+  /* ── Details panel ───────────────────────────── */
+  details.panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .detail-toggle {
+    list-style: none;
+    padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: background .15s, border-color .15s;
+  }
+  .detail-toggle::-webkit-details-marker { display: none; }
+  details[open] > .detail-toggle { border-bottom-color: var(--line-soft); background: var(--paper-2); }
+  .detail-toggle h2 {
+    margin: 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.1;
+  }
+  .detail-toggle .sort-label {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .detail-toggle-icon {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    line-height: 0;
+    transition: transform .2s, background .15s, color .15s;
+  }
+  details[open] > .detail-toggle .detail-toggle-icon {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    transform: rotate(45deg);
+  }
+
+  .detail-content { padding: 24px; display: grid; gap: 24px; }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .detail-cell {
+    padding: 16px 18px;
+    border-right: 1px solid var(--line-soft);
+    background: var(--paper-2);
+    min-width: 0;
+  }
+  .detail-cell:last-child { border-right: 0; }
+  .detail-cell span {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .detail-cell strong {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  .detail-forms {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 20px;
+  }
+  .inline-form {
+    display: grid; gap: 12px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper-2);
+    align-content: start;
+  }
+  .inline-form h3 {
+    margin: 0 0 4px 0;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .inline-form .primary-btn { height: 38px; }
+  .usage-row { display: grid; grid-template-columns: 1fr 1fr 110px; gap: 8px; }
+  .expiry-row { display: grid; grid-template-columns: 130px 1fr; gap: 8px; }
+  .tag-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .history-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .history-actions { display: grid; grid-template-columns: 1fr 38px; gap: 8px; }
+
+  /* ── Tables ───────────────────────────── */
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+  th, td {
+    padding: 14px 16px;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  th {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--line);
+    padding-top: 10px; padding-bottom: 10px;
+  }
+  tbody tr { transition: background .12s; }
+  tbody tr:hover { background: var(--paper-2); }
+  tbody tr.best {
+    background: linear-gradient(90deg, var(--accent-soft) 0%, transparent 100%);
+    position: relative;
+  }
+  tbody tr.best td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  tbody tr:last-child td { border-bottom: 0; }
+
+  .rank {
+    display: inline-flex;
+    width: 26px; height: 26px;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--muted);
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  tr.best .rank {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .price {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  tr.best .price { color: var(--accent); }
+  .channel-name { font-weight: 500; font-size: 14px; }
+
+  .tag {
+    display: inline-flex; align-items: center;
+    height: 22px; padding: 0 8px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+  tr.best .tag {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(184,71,42,0.06);
+  }
+
+  td .price, td:has(> .price) { font-variant-numeric: tabular-nums; }
+  td {
+    font-variant-numeric: tabular-nums;
+    font-size: 13.5px;
+  }
+
+  .select-check {
+    width: 16px; height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .cart-state { color: var(--muted); font-size: 12px; }
+  .cart-state.selected { color: var(--good); font-weight: 600; }
+  .delete-btn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    color: var(--muted);
+    font-size: 14px;
+    transition: background .15s, color .15s;
+  }
+  .delete-btn:hover { background: var(--accent-soft); color: var(--accent); }
+  .product-edit { height: 28px; padding: 0 8px; font-size: 12.5px; }
+
+  .filters {
+    display: grid;
+    grid-template-columns: 160px 160px 1fr;
+    gap: 10px;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--paper-2);
+  }
+  .filters select, .filters input { height: 32px; font-size: 12.5px; background: var(--card); }
+
+  .empty {
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+  }
+  .empty strong {
+    display: block;
+    margin-bottom: 10px;
+    font-style: normal;
+    font-family: var(--serif);
+    color: var(--ink);
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  /* ── Tweaks ───────────────────────────── */
+  .tweaks-fab {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    z-index: 50;
+    display: none;
+    align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .tweaks-panel {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 320px;
+    background: var(--card);
+    border: 1px solid var(--ink);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    z-index: 60;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    display: none;
+  }
+  .tweaks-panel.open { display: block; }
+  .tweaks-panel h3 {
+    margin: 0 0 16px;
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .tweaks-panel .tweak-row {
+    display: grid; gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .tweaks-panel .tweak-row:first-of-type { border-top: 0; }
+  .tweaks-panel label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tweak-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tweak-options button {
+    flex: 1;
+    min-width: 0;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    color: var(--ink);
+    font-size: 12px;
+    transition: all .15s;
+  }
+  .tweak-options button.on {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .swatch-row { display: flex; gap: 8px; }
+  .swatch {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform .15s, border-color .15s;
+  }
+  .swatch.on { border-color: var(--ink); transform: scale(1.1); }
+  .tweaks-panel .tweak-close {
+    font-size: 18px; line-height: 1; color: var(--muted);
+    padding: 4px;
+  }
+
+  /* ── Responsive ───────────────────────────── */
+  @media (max-width: 980px) {
+    .app { grid-template-columns: 1fr; gap: 24px; }
+    .sidebar { position: static; }
+    .summary { grid-template-columns: 1fr 1fr; }
+    .metric { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+    .detail-grid { grid-template-columns: 1fr 1fr; }
+    .detail-cell { border-right: 0; border-bottom: 1px solid var(--line-soft); }
+    .detail-forms { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .masthead { grid-template-columns: 1fr; }
+    .masthead .dateline { text-align: left; }
+    .summary, .detail-grid { grid-template-columns: 1fr; }
+    .source-header { display: none; }
+    .source-row { grid-template-columns: 1fr; }
+    .source-row label { display: block; }
+    .filters { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <header class="masthead">
+    <div>
+      <div class="kicker">日常采购 · 精打细算</div>
+      <h1>价目<em>册</em></h1>
+    </div>
+    <div class="dateline">
+      <span>每单位最低单价册</span>
+      <strong id="datelineDate"></strong>
+    </div>
+  </header>
+
+  <main class="app">
+    <aside class="panel sidebar">
+      <form id="dealForm" autocomplete="off">
+        <div class="section-rule"><span>录入</span></div>
+
+        <div class="field">
+          <label for="productName">产品名称</label>
+          <input id="productName" name="productName" placeholder="爽肤水 / 面霜 / 洗发水" required>
+        </div>
+
+        <div class="field">
+          <label for="unit">计量单位</label>
+          <select id="unit" name="unit">
+            <option value="最小单位">最小单位</option>
+            <option value="ml">ml</option>
+            <option value="g">g</option>
+            <option value="片">片</option>
+            <option value="粒">粒</option>
+            <option value="包">包</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>渠道明细</label>
+          <div class="source-table">
+            <div class="source-header" aria-hidden="true">
+              <span>渠道</span>
+              <span>正装</span>
+              <span>赠送</span>
+              <span>总价</span>
+              <span>注</span>
+              <span>删</span>
+            </div>
+            <div class="source-list" id="sourceList"></div>
+          </div>
+        </div>
+
+        <div class="error" id="errorText" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="icon-btn" type="button" id="addSource" title="新增渠道">＋</button>
+          <button class="primary-btn" type="submit">收入价目册</button>
+        </div>
+        <button class="ghost-btn" type="button" id="fillExample">填入示例</button>
+      </form>
+
+      <p class="hint">公式 ── 总价 ÷（正装 + 赠送）。单位随产品记忆，历史低价一并参与排序。</p>
+    </aside>
+
+    <section class="main">
+      <div class="panel toolbar">
+        <div class="product-tabs" id="productTabs"></div>
+        <div class="toolbar-actions">
+          <button class="ghost-btn" type="button" id="exportCsv">导出 CSV</button>
+          <button class="ghost-btn" type="button" id="clearProduct">清空当前</button>
+        </div>
+      </div>
+
+      <section class="panel summary" aria-label="汇总">
+        <div class="metric">
+          <span>当前产品 · Item</span>
+          <strong id="currentProduct">未选择</strong>
+        </div>
+        <div class="metric">
+          <span>价格记录 · Entries</span>
+          <strong id="dealCount">0</strong>
+        </div>
+        <div class="metric">
+          <span>最低单价 · Best</span>
+          <strong id="bestPrice">—</strong>
+        </div>
+        <div class="metric">
+          <span>最高差价 · Spread</span>
+          <strong id="spreadPrice">—</strong>
+        </div>
+      </section>
+
+      <details class="panel detail-panel" id="detailPanel">
+        <summary class="detail-toggle">
+          <div>
+            <h2 id="detailTitle">产品详情</h2>
+            <span class="sort-label">用量 · 保质期 · 历史低价</span>
+          </div>
+          <span class="detail-toggle-icon">＋</span>
+        </summary>
+        <div class="detail-content">
+          <div class="detail-grid">
+            <div class="detail-cell"><span>购物车购买</span><strong id="selectedTotal">—</strong></div>
+            <div class="detail-cell"><span>当前库存</span><strong id="inventoryTotal">—</strong></div>
+            <div class="detail-cell"><span>预计可用</span><strong id="usageDuration">—</strong></div>
+            <div class="detail-cell"><span>新购后可用到</span><strong id="usableUntil">—</strong></div>
+            <div class="detail-cell"><span>保质期至</span><strong id="expiryDistance">—</strong></div>
+          </div>
+
+          <div class="detail-forms">
+            <form class="inline-form" id="productMetaForm" autocomplete="off">
+              <h3>用量与保质期</h3>
+              <div class="usage-row">
+                <div class="field"><label for="usageAmount">使用量</label>
+                  <div class="unit-input"><input id="usageAmount" inputmode="decimal" placeholder="1"><span class="unit-suffix" data-unit-label>单位</span></div>
+                </div>
+                <div class="field"><label for="inventoryAmount">当前库存</label>
+                  <div class="unit-input"><input id="inventoryAmount" inputmode="decimal" placeholder="0"><span class="unit-suffix" data-unit-label>单位</span></div>
+                </div>
+                <div class="field"><label for="usagePeriod">周期</label>
+                  <select id="usagePeriod"><option value="day">每天</option><option value="week">每周</option><option value="month">每月</option></select>
+                </div>
+              </div>
+              <div class="expiry-row">
+                <div class="field"><label for="expiryPreset">保质期</label>
+                  <select id="expiryPreset"><option value="">选择月份</option><option value="3个月">3个月</option><option value="6个月">6个月</option><option value="12个月">12个月</option><option value="24个月">24个月</option><option value="36个月">36个月</option></select>
+                </div>
+                <div class="field"><label for="expiryInput">或填到期年月</label><input id="expiryInput" placeholder="2026-08 或 6个月"></div>
+              </div>
+              <div class="tag-row">
+                <div class="field"><label for="tagPrimary">一级分类</label><input id="tagPrimary" list="tagPrimaryOptions" placeholder="日用 / 厨房"></div>
+                <div class="field"><label for="tagSecondary">二级分类</label><input id="tagSecondary" list="tagSecondaryOptions" placeholder="洗发水"></div>
+              </div>
+              <button class="primary-btn" type="submit">保存详情</button>
+              <div class="hint" id="productMetaHint">例如：1 粒/每天；保质期可填 2026-08 或 6个月。</div>
+            </form>
+
+            <form class="inline-form" id="historyForm" autocomplete="off">
+              <h3>历史购买低价</h3>
+              <div class="history-row">
+                <div class="field"><label for="historyDate">时间</label><input id="historyDate" type="date"></div>
+                <div class="field"><label for="historyPrice">价格</label><input id="historyPrice" inputmode="decimal" placeholder="316"></div>
+                <div class="field"><label for="historyAmount">含量</label>
+                  <div class="unit-input"><input id="historyAmount" inputmode="decimal" placeholder="160"><span class="unit-suffix" data-unit-label>单位</span></div>
+                </div>
+              </div>
+              <div class="history-actions">
+                <input id="historyChannel" list="channelOptions" placeholder="渠道（可选）">
+                <button class="icon-btn" type="submit" title="新增">＋</button>
+              </div>
+              <div id="historyArea"></div>
+            </form>
+          </div>
+        </div>
+      </details>
+
+      <details class="panel table-panel" id="inventoryPanel" open>
+        <summary class="detail-toggle">
+          <div><h2>库存</h2><span class="sort-label">按一级 / 二级分类查看</span></div>
+          <span class="detail-toggle-icon">＋</span>
+        </summary>
+        <div class="filters">
+          <select id="inventoryPrimaryFilter" aria-label="一级分类筛选"></select>
+          <select id="inventorySecondaryFilter" aria-label="二级分类筛选"></select>
+          <input id="inventoryProductFilter" list="productOptions" placeholder="按产品搜索">
+        </div>
+        <div id="inventoryArea"></div>
+      </details>
+
+      <details class="panel table-panel" id="pricePanel" open>
+        <summary class="detail-toggle">
+          <div><h2>价格排序</h2><span class="sort-label">勾选后进入购物车</span></div>
+          <span class="detail-toggle-icon">＋</span>
+        </summary>
+        <div id="tableArea"></div>
+      </details>
+
+      <details class="panel table-panel" id="cartPanel" open>
+        <summary class="detail-toggle">
+          <div><h2>购物车</h2><span class="sort-label">查看各渠道与选中情况</span></div>
+          <span class="detail-toggle-icon">＋</span>
+        </summary>
+        <div class="filters">
+          <select id="productFilter" aria-label="产品筛选"></select>
+          <select id="selectedFilter" aria-label="选中状态筛选">
+            <option value="all">全部状态</option>
+            <option value="selected">已选中</option>
+            <option value="unselected">未选中</option>
+          </select>
+          <input id="channelFilter" list="channelOptions" placeholder="按渠道搜索">
+        </div>
+        <div id="cartArea"></div>
+      </details>
+    </section>
+
+    <datalist id="channelOptions"></datalist>
+    <datalist id="productOptions"></datalist>
+    <datalist id="tagPrimaryOptions"></datalist>
+    <datalist id="tagSecondaryOptions"></datalist>
+  </main>
+
+  <button class="tweaks-fab" id="tweaksFab" title="Tweaks">⚙</button>
+  <div class="tweaks-panel" id="tweaksPanel">
+    <h3>调节 <button class="tweak-close" id="tweaksClose">×</button></h3>
+    <div class="tweak-row">
+      <label>主题</label>
+      <div class="tweak-options" data-tweak="theme">
+        <button data-value="light" class="on">浅色</button>
+        <button data-value="dark">深色</button>
+      </div>
+    </div>
+    <div class="tweak-row">
+      <label>密度</label>
+      <div class="tweak-options" data-tweak="density">
+        <button data-value="compact">紧凑</button>
+        <button data-value="normal" class="on">标准</button>
+        <button data-value="cozy">舒适</button>
+      </div>
+    </div>
+    <div class="tweak-row">
+      <label>主题色</label>
+      <div class="swatch-row" data-tweak="accent">
+        <button class="swatch on" data-value="#b8472a" style="background:#b8472a" title="赭石"></button>
+        <button class="swatch" data-value="#a8801f" style="background:#a8801f" title="赤金"></button>
+        <button class="swatch" data-value="#4a6a3a" style="background:#4a6a3a" title="松柏"></button>
+        <button class="swatch" data-value="#3d4870" style="background:#3d4870" title="墨蓝"></button>
+        <button class="swatch" data-value="#7a3a5f" style="background:#7a3a5f" title="紫绛"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared/app.js"></script>
+  <script src="shared/tweaks.js"></script>
+  <script>
+    // Dateline
+    (function(){
+      const d = new Date();
+      const dateEl = document.getElementById('datelineDate');
+      if (dateEl) dateEl.textContent = `${d.getFullYear()} 年 ${String(d.getMonth()+1).padStart(2,'0')} 月 ${String(d.getDate()).padStart(2,'0')} 日`;
+    })();
+  </script>
+</body>
+</html>
