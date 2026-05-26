@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>单价比价台 // 精准版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>window.APP_VARIANT = "precision-en"; window.APP_LOCALE = "en";</script>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --bg-2: #f3f3f1;
+    --card: #ffffff;
+    --ink: #0a0a0a;
+    --ink-2: #2c2c2c;
+    --muted: #737373;
+    --muted-2: #a3a3a3;
+    --line: #e5e5e3;
+    --line-soft: #efefed;
+    --accent: #16a34a;     /* signal green */
+    --accent-soft: #dcfce7;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --info: #2563eb;
+    --best: #16a34a;
+    --best-bg: #f0fdf4;
+    --radius: 4px;
+    --radius-sm: 3px;
+    --focus: 0 0 0 3px rgba(22,163,74,0.18);
+    --sans: "Inter", "PingFang SC", "HarmonyOS Sans", "Microsoft YaHei", system-ui, sans-serif;
+    --mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+    --pad: 18px;
+    --row-h: 36px;
+  }
+  [data-density="compact"] { --pad: 12px; --row-h: 30px; }
+  [data-density="cozy"]    { --pad: 28px; --row-h: 44px; }
+  [data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg-2: #141414;
+    --card: #111111;
+    --ink: #fafaf9;
+    --ink-2: #d4d4d4;
+    --muted: #737373;
+    --muted-2: #525252;
+    --line: #262626;
+    --line-soft: #1a1a1a;
+    --accent-soft: #0a2a14;
+    --best-bg: #0a2a14;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  button, input, select { font: inherit; color: inherit; }
+  button { border: 0; cursor: pointer; background: transparent; }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ── Topbar ───────────────────────────── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--pad);
+    height: 44px;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .brand .logo {
+    display: inline-grid;
+    place-items: center;
+    width: 22px; height: 22px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .brand .meta {
+    color: var(--muted);
+    font-weight: 400;
+    padding-left: 12px;
+    margin-left: 4px;
+    border-left: 1px solid var(--line);
+    font-size: 12px;
+  }
+  .topbar-right {
+    display: flex; align-items: center; gap: 16px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .topbar-stat { display: inline-flex; align-items: center; gap: 6px; }
+  .topbar-stat strong {
+    color: var(--ink);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .topbar-stat .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* ── App grid ───────────────────────────── */
+  .app {
+    display: grid;
+    grid-template-columns: minmax(400px, 440px) minmax(0, 1fr);
+    align-items: start;
+    min-height: calc(100vh - 44px);
+  }
+  .main {
+    display: grid; gap: 0;
+    min-width: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  /* ── Sidebar ───────────────────────────── */
+  .sidebar {
+    padding: var(--pad);
+    display: grid; gap: 14px;
+    background: var(--card);
+    align-self: start;
+    position: sticky;
+    top: 44px;
+    min-height: calc(100vh - 44px);
+  }
+  .sidebar-head {
+    display: flex; align-items: baseline; gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar-head h2 {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .sidebar-head .key {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: var(--radius-sm);
+  }
+  .sidebar form { display: grid; gap: 12px; }
+
+  .field { display: grid; gap: 5px; min-width: 0; }
+  .field label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    font-weight: 500;
+  }
+  input, select {
+    width: 100%;
+    height: 32px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0 10px;
+    outline: 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    transition: border-color .12s, box-shadow .12s, background .12s;
+  }
+  input::placeholder { color: var(--muted-2); }
+  input:focus, select:focus { border-color: var(--accent); background: var(--card); box-shadow: var(--focus); }
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23737373' d='M1.5 3.5l3.5 3.5 3.5-3.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 10px) center;
+    padding-right: 28px;
+  }
+
+  .unit-input {
+    display: grid; grid-template-columns: 1fr auto; align-items: stretch;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .unit-input:focus-within { border-color: var(--accent); box-shadow: var(--focus); background: var(--card); }
+  .unit-input input { border: 0; background: transparent; box-shadow: none !important; }
+  .unit-suffix {
+    padding: 0 10px;
+    display: flex; align-items: center;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    border-left: 1px solid var(--line);
+  }
+
+  /* ── Source rows ───────────────────────────── */
+  .source-table {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .source-header {
+    display: grid;
+    grid-template-columns: minmax(112px, 1.25fr) minmax(68px, 0.75fr) minmax(68px, 0.75fr) minmax(74px, 0.8fr) 24px 24px;
+    gap: 4px;
+    padding: 6px 8px;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    text-transform: uppercase;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+  }
+  .source-header span:nth-child(5), .source-header span:nth-child(6) { text-align: center; }
+  .source-row {
+    display: grid;
+    grid-template-columns: minmax(112px, 1.25fr) minmax(68px, 0.75fr) minmax(68px, 0.75fr) minmax(74px, 0.8fr) 24px 24px;
+    gap: 4px;
+    padding: 4px 8px;
+    align-items: center;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--card);
+  }
+  .source-row:last-child { border-bottom: 0; }
+  .source-row .field { margin: 0; }
+  .source-row label { display: none; }
+  .source-row input,
+  .source-row select {
+    height: 26px;
+    padding: 0 6px;
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 2px;
+    font-size: 12.5px;
+  }
+  .source-row select { padding-right: 22px; background-position: calc(100% - 7px) center; }
+  .source-row input:focus, .source-row select:focus { background-color: var(--bg); border-color: var(--accent); }
+  .source-row input[data-field="totalPrice"],
+  .source-row input[data-field="baseAmount"],
+  .source-row input[data-field="bonusAmount"] { font-family: var(--mono); }
+  .source-note { grid-column: 1 / -1; padding: 2px 0 4px; }
+  .source-note.hidden { display: none; }
+
+  .note-toggle, .remove-source {
+    width: 22px; height: 22px;
+    border-radius: var(--radius-sm);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 13px;
+    transition: background .12s, color .12s;
+  }
+  .note-toggle:hover { background: var(--bg-2); color: var(--ink); }
+  .note-toggle.active { color: var(--info); }
+  .remove-source:hover { background: var(--bg-2); color: var(--danger); }
+
+  /* ── Buttons ───────────────────────────── */
+  .actions { display: grid; grid-template-columns: 32px 1fr; gap: 6px; }
+  .primary-btn {
+    height: 34px;
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: var(--radius-sm);
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.01em;
+    transition: background .12s;
+  }
+  .primary-btn:hover { background: var(--accent); }
+  .icon-btn, .ghost-btn {
+    height: 34px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 12px;
+    transition: background .12s, border-color .12s;
+  }
+  .icon-btn:hover, .ghost-btn:hover { background: var(--bg-2); border-color: var(--ink); }
+  .ghost-btn { padding: 0 12px; }
+
+  #fillExample {
+    height: 30px;
+    color: var(--muted);
+    background: transparent;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-sm);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    transition: all .12s;
+  }
+  #fillExample:hover { color: var(--ink); border-color: var(--muted); }
+
+  .error {
+    min-height: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--danger);
+  }
+  .hint {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.55;
+    color: var(--muted);
+    background: var(--bg-2);
+    border-left: 2px solid var(--line);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+
+  /* ── Toolbar ───────────────────────────── */
+  .toolbar {
+    padding: 10px var(--pad);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line);
+    background: var(--card);
+  }
+  .product-tabs { display: flex; gap: 2px; flex-wrap: wrap; min-width: 0; background: var(--bg-2); padding: 2px; border-radius: var(--radius-sm); }
+  .tab {
+    height: 26px;
+    padding: 0 12px;
+    background: transparent;
+    color: var(--muted);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    transition: all .12s;
+  }
+  .tab:hover { color: var(--ink); background: var(--card); }
+  .tab.active {
+    background: var(--card);
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .toolbar-actions { display: flex; gap: 6px; }
+  .toolbar-actions .ghost-btn { height: 28px; font-size: 11px; padding: 0 10px; }
+
+  /* ── Summary band ───────────────────────────── */
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+  }
+  .metric {
+    padding: 14px var(--pad) 14px;
+    border-right: 1px solid var(--line);
+    min-width: 0;
+  }
+  .metric:last-child { border-right: 0; }
+  .metric span {
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .metric span::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--muted-2);
+  }
+  .metric:nth-child(3) span::before { background: var(--accent); }
+  .metric strong {
+    display: block;
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .metric:nth-child(3) strong { color: var(--accent); }
+  .metric:nth-child(4) strong { color: var(--warning); }
+
+  /* ── Details ───────────────────────────── */
+  details.panel {
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+  }
+  .detail-toggle {
+    list-style: none;
+    padding: 10px var(--pad);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    cursor: pointer;
+    background: var(--bg-2);
+    border-bottom: 1px solid transparent;
+    transition: background .12s;
+  }
+  .detail-toggle::-webkit-details-marker { display: none; }
+  .detail-toggle:hover { background: var(--line-soft); }
+  details[open] > .detail-toggle { border-bottom-color: var(--line); }
+  .detail-toggle h2 {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .detail-toggle h2::before {
+    content: "▸";
+    color: var(--muted);
+    font-size: 10px;
+    transition: transform .15s;
+    display: inline-block;
+  }
+  details[open] > .detail-toggle h2::before { transform: rotate(90deg); }
+  .detail-toggle .sort-label {
+    display: inline-block;
+    margin-left: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: none;
+    font-weight: 400;
+  }
+  .detail-toggle-icon {
+    display: none;
+  }
+
+  .detail-content { padding: 14px var(--pad); display: grid; gap: 16px; }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .detail-cell {
+    padding: 12px 14px;
+    background: var(--card);
+    border-right: 1px solid var(--line);
+    min-width: 0;
+  }
+  .detail-cell:last-child { border-right: 0; }
+  .detail-cell span {
+    display: block;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .detail-cell strong {
+    display: block;
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+    letter-spacing: -0.01em;
+  }
+
+  .detail-forms {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 12px;
+  }
+  .inline-form {
+    display: grid; gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    align-content: start;
+  }
+  .inline-form h3 {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .inline-form .primary-btn { height: 30px; font-size: 11.5px; }
+  .usage-row { display: grid; grid-template-columns: 1fr 1fr 100px; gap: 6px; }
+  .expiry-row { display: grid; grid-template-columns: 120px 1fr; gap: 6px; }
+  .tag-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .history-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .history-actions { display: grid; grid-template-columns: 1fr 32px; gap: 6px; }
+
+  /* ── Tables ───────────────────────────── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 720px; }
+  th, td {
+    padding: 8px 12px;
+    text-align: left; vertical-align: middle;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--line-soft);
+    height: var(--row-h);
+  }
+  th {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--line);
+    text-transform: uppercase;
+    padding-top: 8px; padding-bottom: 8px;
+  }
+  tbody tr { transition: background .1s; }
+  tbody tr:hover { background: var(--bg); }
+  tbody tr.best { background: var(--best-bg); }
+  tbody tr.best:hover { background: var(--best-bg); }
+  tbody tr.best td:first-child { box-shadow: inset 2px 0 0 var(--best); }
+
+  td {
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rank {
+    display: inline-flex; width: 22px; height: 22px;
+    align-items: center; justify-content: center;
+    background: var(--bg-2);
+    border-radius: 3px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  tr.best .rank { background: var(--best); color: #fff; }
+
+  .price {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  tr.best .price { color: var(--best); }
+  .channel-name { font-weight: 600; font-size: 12.5px; }
+
+  .tag {
+    display: inline-flex; align-items: center;
+    height: 20px; padding: 0 6px;
+    background: var(--bg-2);
+    border-radius: 2px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  tr.best .tag {
+    background: var(--best);
+    color: #fff;
+  }
+
+  .select-check {
+    width: 14px; height: 14px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .cart-state { color: var(--muted); font-family: var(--mono); font-size: 11px; }
+  .cart-state.selected { color: var(--accent); font-weight: 600; }
+  .delete-btn {
+    width: 24px; height: 24px;
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 13px;
+    transition: background .12s, color .12s;
+  }
+  .delete-btn:hover { background: var(--bg-2); color: var(--danger); }
+  .product-edit { height: 24px; padding: 0 6px; font-size: 11.5px; }
+
+  .filters {
+    display: grid;
+    grid-template-columns: 160px 160px 1fr;
+    gap: 8px;
+    padding: 10px var(--pad);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .filters select, .filters input { height: 28px; font-size: 12px; }
+
+  .empty {
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+  .empty strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 14px;
+    font-family: var(--sans);
+    font-weight: 600;
+  }
+
+  /* ── Tweaks ───────────────────────────── */
+  .tweaks-fab {
+    position: fixed;
+    bottom: 18px; right: 18px;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    z-index: 50;
+    display: none;
+    align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+  .tweaks-panel {
+    position: fixed;
+    bottom: 18px; right: 18px;
+    width: 280px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    z-index: 60;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+    display: none;
+  }
+  .tweaks-panel.open { display: block; }
+  .tweaks-panel h3 {
+    margin: 0 0 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .tweak-row {
+    display: grid; gap: 6px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .tweak-row:first-of-type { border-top: 0; }
+  .tweak-row label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tweak-options {
+    display: flex; gap: 2px;
+    background: var(--bg-2); padding: 2px;
+    border-radius: var(--radius-sm);
+  }
+  .tweak-options button {
+    flex: 1; min-width: 0; height: 26px; padding: 0 8px;
+    border-radius: 2px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    transition: all .12s;
+  }
+  .tweak-options button.on { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+  .swatch-row { display: flex; gap: 6px; }
+  .swatch {
+    width: 28px; height: 28px;
+    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform .12s;
+  }
+  .swatch.on { border-color: var(--ink); }
+  .tweak-close {
+    width: 22px; height: 22px;
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .tweak-close:hover { background: var(--bg-2); color: var(--ink); }
+
+  /* ── Responsive ───────────────────────────── */
+  @media (max-width: 1100px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: static; min-height: auto; }
+    .main { border-left: 0; border-top: 1px solid var(--line); }
+    .summary { grid-template-columns: 1fr 1fr; }
+    .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+    .metric:nth-child(2n) { border-right: 0; }
+    .detail-grid { grid-template-columns: 1fr 1fr; }
+    .detail-cell { border-right: 0; border-bottom: 1px solid var(--line); }
+    .detail-forms { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    :root { --pad: 12px; }
+    .topbar { height: auto; min-height: 44px; flex-wrap: wrap; gap: 8px; padding-top: 8px; padding-bottom: 8px; }
+    .topbar-right { width: 100%; gap: 10px; flex-wrap: wrap; }
+    .brand .meta { display: none; }
+    .summary, .detail-grid { grid-template-columns: 1fr; }
+    .source-header { display: none; }
+    .source-row { grid-template-columns: 1fr; }
+    .source-row label { display: block; }
+    .filters { grid-template-columns: 1fr; }
+    .usage-row, .expiry-row, .tag-row, .history-row, .history-actions { grid-template-columns: 1fr; }
+    .toolbar-actions { width: 100%; }
+    .toolbar-actions .ghost-btn { flex: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">¥</div>
+      <span>单价比价台</span>
+      <span class="meta">// 精准比价</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-stat"><span class="dot"></span>本地已同步</span>
+      <span class="topbar-stat">产品 <strong id="statItems">0</strong></span>
+      <span class="topbar-stat">渠道 <strong id="statChannels">0</strong></span>
+      <span class="topbar-stat" id="statDate">—</span>
+    </div>
+  </div>
+
+  <main class="app">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h2>新增产品</h2>
+        <span class="key">快速录入</span>
+      </div>
+      <form id="dealForm" autocomplete="off">
+        <div class="field">
+          <label for="productName">产品名称</label>
+          <input id="productName" name="productName" placeholder="爽肤水 / 面霜 / 洗发水" required>
+        </div>
+        <div class="field">
+          <label for="unit">计量单位</label>
+          <select id="unit" name="unit">
+            <option value="最小单位">最小单位</option>
+            <option value="ml">ml</option>
+            <option value="g">g</option>
+            <option value="片">片</option>
+            <option value="粒">粒</option>
+            <option value="包">包</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>购买渠道</label>
+          <div class="source-table">
+            <div class="source-header" aria-hidden="true">
+              <span>渠道</span><span>正装</span><span>赠送</span><span>总价</span><span>注</span><span>删</span>
+            </div>
+            <div class="source-list" id="sourceList"></div>
+          </div>
+        </div>
+
+        <div class="error" id="errorText" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="icon-btn" type="button" id="addSource" title="新增渠道">＋</button>
+          <button class="primary-btn" type="submit">添加价格记录并排名 ▸</button>
+        </div>
+        <button class="ghost-btn" type="button" id="fillExample" style="width:100%">载入示例数据</button>
+      </form>
+
+      <p class="hint">历史低价会合并进排名，同一产品会使用相同单位。</p>
+    </aside>
+
+    <section class="main">
+      <div class="toolbar">
+        <div class="product-tabs" id="productTabs"></div>
+        <div class="toolbar-actions">
+          <button class="ghost-btn" type="button" id="exportCsv">⇣ 导出表格</button>
+          <button class="ghost-btn" type="button" id="clearProduct">⌫ 清空当前产品</button>
+        </div>
+      </div>
+
+      <section class="summary" aria-label="汇总">
+        <div class="metric"><span>产品</span><strong id="currentProduct">未选择</strong></div>
+        <div class="metric"><span>记录数</span><strong id="dealCount">0</strong></div>
+        <div class="metric"><span>最低单价</span><strong id="bestPrice">—</strong></div>
+        <div class="metric"><span>价差</span><strong id="spreadPrice">—</strong></div>
+      </section>
+
+      <details class="panel detail-panel" id="detailPanel">
+        <summary class="detail-toggle">
+          <h2 id="detailTitle">产品详情<span class="sort-label">// 用量 · 保质期 · 历史</span></h2>
+          <span class="detail-toggle-icon">＋</span>
+        </summary>
+        <div class="detail-content">
+          <div class="detail-grid">
+            <div class="detail-cell"><span>已选总量</span><strong id="selectedTotal">—</strong></div>
+            <div class="detail-cell"><span>当前库存</span><strong id="inventoryTotal">—</strong></div>
+            <div class="detail-cell"><span>可用时长</span><strong id="usageDuration">—</strong></div>
+            <div class="detail-cell"><span>可用到</span><strong id="usableUntil">—</strong></div>
+            <div class="detail-cell"><span>保质期</span><strong id="expiryDistance">—</strong></div>
+          </div>
+
+          <div class="detail-forms">
+            <form class="inline-form" id="productMetaForm" autocomplete="off">
+              <h3>用量与保质期</h3>
+              <div class="usage-row">
+                <div class="field"><label for="usageAmount">使用量</label>
+                  <div class="unit-input"><input id="usageAmount" inputmode="decimal" placeholder="1"><span class="unit-suffix" data-unit-label>单位</span></div>
+                </div>
+                <div class="field"><label for="inventoryAmount">库存</label>
+                  <div class="unit-input"><input id="inventoryAmount" inputmode="decimal" placeholder="0"><span class="unit-suffix" data-unit-label>单位</span></div>
+                </div>
+                <div class="field"><label for="usagePeriod">周期</label>
+                  <select id="usagePeriod"><option value="day">每天</option><option value="week">每周</option><option value="month">每月</option></select>
+                </div>
+              </div>
+              <div class="expiry-row">
+                <div class="field"><label for="expiryPreset">保质期快捷</label>
+                  <select id="expiryPreset"><option value="">选择月数</option><option value="3个月">3个月</option><option value="6个月">6个月</option><option value="12个月">12个月</option><option value="24个月">24个月</option><option value="36个月">36个月</option></select>
+                </div>
+                <div class="field"><label for="expiryInput">到期时间</label><input id="expiryInput" placeholder="2026-08 / 6个月"></div>
+              </div>
+              <div class="tag-row">
+                <div class="field"><label for="tagPrimary">一级分类</label><input id="tagPrimary" list="tagPrimaryOptions" placeholder="日用 / 厨房"></div>
+                <div class="field"><label for="tagSecondary">二级分类</label><input id="tagSecondary" list="tagSecondaryOptions" placeholder="洗发水"></div>
+              </div>
+              <button class="primary-btn" type="submit">保存详情 ▸</button>
+              <div class="hint" id="productMetaHint">例如：每天 1 粒；保质期可填 2026-08 或 6个月。</div>
+            </form>
+
+            <form class="inline-form" id="historyForm" autocomplete="off">
+              <h3>历史低价</h3>
+              <div class="history-row">
+                <div class="field"><label for="historyDate">日期</label><input id="historyDate" type="date"></div>
+                <div class="field"><label for="historyPrice">价格</label><input id="historyPrice" inputmode="decimal" placeholder="316"></div>
+                <div class="field"><label for="historyAmount">含量</label>
+                  <div class="unit-input"><input id="historyAmount" inputmode="decimal" placeholder="160"><span class="unit-suffix" data-unit-label>单位</span></div>
+                </div>
+              </div>
+              <div class="history-actions">
+                <input id="historyChannel" list="channelOptions" placeholder="渠道（可选）">
+                <button class="icon-btn" type="submit" title="新增">＋</button>
+              </div>
+              <div id="historyArea"></div>
+            </form>
+          </div>
+        </div>
+      </details>
+
+      <details class="panel table-panel" id="inventoryPanel">
+        <summary class="detail-toggle"><h2>库存<span class="sort-label">// 按一级 / 二级分类</span></h2><span class="detail-toggle-icon">＋</span></summary>
+        <div class="filters">
+          <select id="inventoryPrimaryFilter" aria-label="一级分类筛选"></select>
+          <select id="inventorySecondaryFilter" aria-label="二级分类筛选"></select>
+          <input id="inventoryProductFilter" list="productOptions" placeholder="搜索产品">
+        </div>
+        <div id="inventoryArea"></div>
+      </details>
+
+      <details class="panel table-panel" id="pricePanel" open>
+        <summary class="detail-toggle"><h2>单价排名<span class="sort-label">// 按单位价格升序</span></h2><span class="detail-toggle-icon">＋</span></summary>
+        <div id="tableArea"></div>
+      </details>
+
+      <details class="panel table-panel" id="cartPanel">
+        <summary class="detail-toggle"><h2>购物车<span class="sort-label">// 渠道与勾选</span></h2><span class="detail-toggle-icon">＋</span></summary>
+        <div class="filters">
+          <select id="productFilter" aria-label="产品筛选"></select>
+          <select id="selectedFilter" aria-label="选中状态筛选">
+            <option value="all">全部</option><option value="selected">已选中</option><option value="unselected">未选中</option>
+          </select>
+          <input id="channelFilter" list="channelOptions" placeholder="搜索渠道">
+        </div>
+        <div id="cartArea"></div>
+      </details>
+    </section>
+
+    <datalist id="channelOptions"></datalist>
+    <datalist id="productOptions"></datalist>
+    <datalist id="tagPrimaryOptions"></datalist>
+    <datalist id="tagSecondaryOptions"></datalist>
+  </main>
+
+  <button class="tweaks-fab" id="tweaksFab" title="设置">⚙</button>
+  <div class="tweaks-panel" id="tweaksPanel">
+    <h3>设置 <button class="tweak-close" id="tweaksClose">×</button></h3>
+    <div class="tweak-row">
+      <label>主题</label>
+      <div class="tweak-options" data-tweak="theme">
+        <button data-value="light" class="on">浅色</button>
+        <button data-value="dark">深色</button>
+      </div>
+    </div>
+    <div class="tweak-row">
+      <label>密度</label>
+      <div class="tweak-options" data-tweak="density">
+        <button data-value="compact">紧凑</button>
+        <button data-value="normal" class="on">标准</button>
+        <button data-value="cozy">宽松</button>
+      </div>
+    </div>
+    <div class="tweak-row">
+      <label>强调色</label>
+      <div class="swatch-row" data-tweak="accent">
+        <button class="swatch on" data-value="#16a34a" style="background:#16a34a" title="信号绿"></button>
+        <button class="swatch" data-value="#2563eb" style="background:#2563eb" title="蓝色"></button>
+        <button class="swatch" data-value="#9333ea" style="background:#9333ea" title="紫色"></button>
+        <button class="swatch" data-value="#ea580c" style="background:#ea580c" title="橙色"></button>
+        <button class="swatch" data-value="#0891b2" style="background:#0891b2" title="青色"></button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    (function(){
+      const localeKey = 'unit-price-calculator-locale-' + (window.APP_VARIANT || 'precision');
+      const locale = (window.APP_BILINGUAL ? (localStorage.getItem(localeKey) || 'zh') : (window.APP_LOCALE || 'zh')).toLowerCase().startsWith('en') ? 'en' : 'zh';
+      window.APP_LOCALE = locale;
+      document.documentElement.lang = locale === 'en' ? 'en' : 'zh-CN';
+      const en = {
+        brand:'Unit Price Comparator', meta:'// precision mode', synced:'Local sync ready', items:'Items', channels:'Channels', newEntry:'New Product', quick:'Quick Entry', productName:'Product Name', productPlaceholder:'toner / cream / shampoo', unit:'Unit', unitDefault:'Unit', sheet:'sheet', piece:'piece', pack:'pack', purchaseChannels:'Purchase Channels', channel:'Channel', base:'Base', bonus:'Bonus', total:'Total', note:'Note', del:'Del', addChannel:'Add channel', submit:'Add Price Record and Rank', example:'Load example data', hint:'Historical lows are merged into the ranking, and the same product uses the same unit.', exportCsv:'Export CSV', clear:'Clear Current Product', item:'Item', entries:'Entries', best:'Best Unit Price', spread:'Spread', detail:'Product Details', detailSub:'// usage / expiry / history', selectedTotal:'Selected Total', inventory:'Current Inventory', runway:'Runway', usableUntil:'Usable Until', expiry:'Expiry', usageExpiry:'Usage and Expiry', usage:'Usage', stock:'Inventory', period:'Period', day:'Per day', week:'Per week', month:'Per month', shelf:'Shelf Preset', chooseMonths:'Choose months', expiryDate:'Expiry Date', l1:'L1 Category', l2:'L2 Category', tag1:'daily / kitchen', tag2:'shampoo', saveDetails:'Save Details', metaHint:'Example: 1 piece per day; expiry can be 2026-08 or 6 months.', history:'Historical Low', date:'Date', price:'Price', amount:'Amount', channelOptional:'Channel (optional)', inventoryTitle:'Inventory', inventorySub:'// by L1 / L2 category', searchProduct:'Search product', rank:'Unit Price Ranking', rankSub:'// sorted by unit price ascending', cart:'Cart', cartSub:'// channels and selection', all:'All', selected:'Selected', unselected:'Unselected', searchChannel:'Search channel', settings:'Settings', theme:'Theme', light:'Light', dark:'Dark', density:'Density', compact:'Compact', normal:'Normal', cozy:'Cozy', accent:'Accent', green:'Signal green', blue:'Blue', violet:'Violet', orange:'Orange', cyan:'Cyan', title:'Unit Price Comparator // Precision'
+      };
+      function q(s){ return document.querySelector(s); }
+      function text(s,v){ const el=q(s); if(el) el.textContent=v; }
+      function html(s,v){ const el=q(s); if(el) el.innerHTML=v; }
+      function ph(s,v){ const el=q(s); if(el) el.placeholder=v; }
+      function ttl(s,v){ const el=q(s); if(el) el.title=v; }
+      function leading(s,v){ const el=q(s); if(!el) return; const node=[...el.childNodes].find(n=>n.nodeType===3); if(node) node.textContent=v+' '; else el.prepend(document.createTextNode(v+' ')); }
+      function applyEn(){
+        document.title=en.title;
+        text('.brand > span:not(.meta)', en.brand); text('.brand .meta', en.meta); leading('.topbar-stat:nth-child(1)', en.synced); leading('.topbar-stat:nth-child(2)', en.items); leading('.topbar-stat:nth-child(3)', en.channels);
+        text('.sidebar-head h2', en.newEntry); text('.sidebar-head .key', en.quick); text('label[for="productName"]', en.productName); ph('#productName', en.productPlaceholder); text('label[for="unit"]', en.unit); text('#unit option:nth-child(1)', en.unitDefault); text('#unit option:nth-child(4)', en.sheet); text('#unit option:nth-child(5)', en.piece); text('#unit option:nth-child(6)', en.pack);
+        text('#dealForm > .field:nth-of-type(3) > label', en.purchaseChannels); ['channel','base','bonus','total','note','del'].forEach((k,i)=>text('.source-header span:nth-child('+(i+1)+')', en[k])); ttl('#addSource', en.addChannel); text('#dealForm .actions .primary-btn', en.submit); text('#fillExample', en.example); text('.sidebar > .hint', en.hint);
+        text('#exportCsv', en.exportCsv); text('#clearProduct', en.clear); ['item','entries','best','spread'].forEach((k,i)=>text('.summary .metric:nth-child('+(i+1)+') span', en[k]));
+        html('#detailTitle', en.detail + '<span class="sort-label">' + en.detailSub + '</span>'); text('.detail-grid .detail-cell:nth-child(1) span', en.selectedTotal); text('.detail-grid .detail-cell:nth-child(2) span', en.inventory); text('.detail-grid .detail-cell:nth-child(3) span', en.runway); text('.detail-grid .detail-cell:nth-child(4) span', en.usableUntil); text('.detail-grid .detail-cell:nth-child(5) span', en.expiry);
+        text('#productMetaForm h3', en.usageExpiry); text('label[for="usageAmount"]', en.usage); text('label[for="inventoryAmount"]', en.stock); text('label[for="usagePeriod"]', en.period); text('#usagePeriod option[value="day"]', en.day); text('#usagePeriod option[value="week"]', en.week); text('#usagePeriod option[value="month"]', en.month); text('label[for="expiryPreset"]', en.shelf); text('#expiryPreset option[value=""]', en.chooseMonths); text('label[for="expiryInput"]', en.expiryDate); text('label[for="tagPrimary"]', en.l1); text('label[for="tagSecondary"]', en.l2); ph('#tagPrimary', en.tag1); ph('#tagSecondary', en.tag2); text('#productMetaForm .primary-btn', en.saveDetails); text('#productMetaHint', en.metaHint);
+        text('#historyForm h3', en.history); text('label[for="historyDate"]', en.date); text('label[for="historyPrice"]', en.price); text('label[for="historyAmount"]', en.amount); ph('#historyChannel', en.channelOptional);
+        html('#inventoryPanel h2', en.inventoryTitle + '<span class="sort-label">' + en.inventorySub + '</span>'); ph('#inventoryProductFilter', en.searchProduct); html('#pricePanel h2', en.rank + '<span class="sort-label">' + en.rankSub + '</span>'); html('#cartPanel h2', en.cart + '<span class="sort-label">' + en.cartSub + '</span>'); text('#selectedFilter option[value="all"]', en.all); text('#selectedFilter option[value="selected"]', en.selected); text('#selectedFilter option[value="unselected"]', en.unselected); ph('#channelFilter', en.searchChannel);
+        ttl('#tweaksFab', en.settings); leading('#tweaksPanel h3', en.settings); text('[data-tweak="theme"] button[data-value="light"]', en.light); text('[data-tweak="theme"] button[data-value="dark"]', en.dark); text('[data-tweak="density"] button[data-value="compact"]', en.compact); text('[data-tweak="density"] button[data-value="normal"]', en.normal); text('[data-tweak="density"] button[data-value="cozy"]', en.cozy); text('.tweak-row:nth-of-type(1) label', en.theme); text('.tweak-row:nth-of-type(2) label', en.density); text('.tweak-row:nth-of-type(3) label', en.accent); ttl('.swatch[data-value="#16a34a"]', en.green); ttl('.swatch[data-value="#2563eb"]', en.blue); ttl('.swatch[data-value="#9333ea"]', en.violet); ttl('.swatch[data-value="#ea580c"]', en.orange); ttl('.swatch[data-value="#0891b2"]', en.cyan);
+      }
+      document.querySelectorAll('[data-locale-button]').forEach(btn=>{ btn.classList.toggle('active', btn.dataset.localeButton===locale); btn.addEventListener('click',()=>{ localStorage.setItem(localeKey, btn.dataset.localeButton); location.reload(); }); });
+      if (locale === 'en') applyEn();
+    })();
+  </script>
+  <script src="shared/app.js"></script>
+  <script src="shared/tweaks.js"></script>
+  <script>
+    (function(){
+      const d = new Date();
+      const el = document.getElementById('statDate');
+      if (el) el.textContent = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+      // Update topbar stats whenever app re-renders. Hook via MutationObserver on tabs.
+      function updateStats() {
+        const tabs = document.querySelectorAll('#productTabs .tab');
+        const statItems = document.getElementById('statItems');
+        const statChannels = document.getElementById('statChannels');
+        try {
+          const dealsKey = `unit-price-calculator-deals-precision`;
+          const deals = JSON.parse(localStorage.getItem(dealsKey) || '[]');
+          const products = new Set(deals.map(d => d.product));
+          statItems.textContent = String(products.size);
+          statChannels.textContent = String(deals.length);
+        } catch {}
+      }
+      const tabsEl = document.getElementById('productTabs');
+      if (tabsEl) new MutationObserver(() => requestAnimationFrame(updateStats)).observe(tabsEl, { childList: true, subtree: true });
+      // Also hook into form submit to update immediately after localStorage write
+      ['dealForm','historyForm','productMetaForm'].forEach((id) => {
+        const f = document.getElementById(id);
+        if (f) f.addEventListener('submit', () => setTimeout(updateStats, 80));
+      });
+      setTimeout(updateStats, 200);
+    })();
+  </script>
+</body>
+</html>
