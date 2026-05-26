@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>618 价格计算器 · 三版对比</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f10;
+    --bg-2: #18181a;
+    --ink: #f4f3f1;
+    --muted: #8b8680;
+    --line: #2a2a2c;
+    --accent: #f5b75a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    background:
+      radial-gradient(ellipse 1000px 500px at 50% -200px, rgba(245,183,90,0.08), transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── Hero ───────────────────────────── */
+  .hero {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 64px 32px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+  }
+  .hero .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .hero .kicker::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .hero h1 {
+    margin: 0;
+    font-family: "Noto Serif SC", serif;
+    font-weight: 600;
+    font-size: clamp(36px, 4.5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .hero p {
+    margin: 14px 0 0;
+    max-width: 540px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .hero .meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    line-height: 1.8;
+  }
+  .hero .meta strong { color: var(--ink); font-weight: 500; }
+
+  /* ── Cards ───────────────────────────── */
+  .grid {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .card {
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245,183,90,0.4);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  }
+
+  .card-head {
+    padding: 22px 24px 16px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .card-title { display: grid; gap: 6px; }
+  .card-title .label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .card-title h2 {
+    margin: 0;
+    font-family: "Noto Serif SC", serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1;
+  }
+  .card-title h2 em { font-style: italic; color: var(--accent); }
+  .card-title .en {
+    margin-top: 2px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .open-btn {
+    width: 36px; height: 36px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .15s, border-color .15s, transform .15s;
+    flex-shrink: 0;
+  }
+  .open-btn:hover { background: var(--accent); color: #0f0f10; border-color: var(--accent); transform: rotate(-30deg); }
+  .open-btn svg { width: 14px; height: 14px; }
+
+  .desc {
+    padding: 14px 24px 18px;
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.55;
+    border-bottom: 1px solid var(--line);
+  }
+  .desc strong { color: var(--ink); font-weight: 500; }
+
+  /* Preview frame */
+  .preview {
+    position: relative;
+    background: var(--bg);
+    flex: 1;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .preview .frame-wrap {
+    width: 1280px;
+    height: 800px;
+    transform-origin: top left;
+    transform: scale(0.32);
+    pointer-events: none;
+  }
+  .preview iframe {
+    width: 1280px;
+    height: 800px;
+    border: 0;
+    display: block;
+    background: #fff;
+  }
+  .preview-mask {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    background: linear-gradient(180deg, transparent 60%, rgba(15,15,16,0.75) 100%);
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 22px;
+    transition: background .2s;
+  }
+  .preview-mask:hover { background: linear-gradient(180deg, rgba(15,15,16,0.1) 0%, rgba(15,15,16,0.8) 100%); }
+  .preview-mask .cta {
+    background: var(--accent);
+    color: #0f0f10;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .2s, transform .2s;
+  }
+  .preview-mask:hover .cta { opacity: 1; transform: translateY(0); }
+
+  /* Per-card accent strips */
+  .card[data-v="v1"] { border-top: 3px solid #b8472a; }
+  .card[data-v="v2"] { border-top: 3px solid #c45a3e; }
+  .card[data-v="v3"] { border-top: 3px solid #16a34a; }
+
+  .swatch-row { display: flex; gap: 4px; }
+  .sw { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); }
+
+  /* ── Footer ───────────────────────────── */
+  .footer {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0 32px 64px;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.7;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px;
+  }
+  .footer a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .footer a:hover { border-color: var(--accent); }
+  .footer-right {
+    display: flex; gap: 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Modal / Lightbox ───────────────────────────── */
+  .modal {
+    position: fixed; inset: 0;
+    background: rgba(15,15,16,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    padding: 24px;
+  }
+  .modal.open { display: flex; align-items: center; justify-content: center; }
+  .modal-frame {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .modal-frame iframe {
+    width: 100%; height: 100%;
+    border: 0;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 40px; height: 40px;
+    background: rgba(15,15,16,0.85);
+    color: #fff;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    z-index: 2;
+    transition: background .15s, transform .15s;
+  }
+  .modal-close:hover { background: var(--accent); color: #0f0f10; transform: rotate(90deg); }
+
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: 1fr; }
+    .preview .frame-wrap { transform: scale(0.5); }
+  }
+  @media (max-width: 640px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero .meta { text-align: left; }
+    .preview .frame-wrap { transform: scale(0.32); }
+  }
+</style>
+</head>
+<body>
+  <section class="hero">
+    <div>
+      <div class="kicker">DEMO REVIEW · 三版对比</div>
+      <h1>价目册 · <em>三个</em>方向</h1>
+      <p>同一套功能，三种性格。点击任意一张卡片可全屏打开试用 — 所有版本共享一份数据逻辑，仅视觉、字体、节奏不同。每个版本都自带 深色 / 浅色、密度、主题色三个 Tweaks。</p>
+    </div>
+    <div class="meta">
+      <span>UNIT PRICE CALCULATOR</span><br>
+      <strong>v · 2026.05</strong>
+    </div>
+  </section>
+
+  <main class="grid">
+    <article class="card" data-v="v1">
+      <header class="card-head">
+        <div class="card-title">
+          <span class="label">V1 · 沉静克制</span>
+          <h2>价目<em>册</em></h2>
+          <span class="en">Editorial · 文房</span>
+        </div>
+        <button class="open-btn" data-open="v1-editorial.html" title="全屏打开">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11 L11 3 M5 3 H11 V9"/></svg>
+        </button>
+      </header>
+      <div class="desc">
+        纸感米白 + 衬线标题 + <strong>焦糖色</strong>高亮最低价。像 Wirecutter 评测文章的清爽感，适合慢慢翻看比对。
+        <div class="swatch-row" style="margin-top: 10px">
+          <span class="sw" style="background:#f4efe4"></span>
+          <span class="sw" style="background:#1c1813"></span>
+          <span class="sw" style="background:#b8472a"></span>
+          <span class="sw" style="background:#a8801f"></span>
+          <span class="sw" style="background:#4a6a3a"></span>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="frame-wrap">
+          <iframe src="v1-editorial.html" title="V1 文房"></iframe>
+        </div>
+        <a class="preview-mask" href="v1-editorial.html" target="_blank" rel="noopener" data-open="v1-editorial.html">
+          <span class="cta">打开 V1 →</span>
+        </a>
+      </div>
+    </article>
+
+    <article class="card" data-v="v2">
+      <header class="card-head">
+        <div class="card-title">
+          <span class="label">V2 · 亲切柔和</span>
+          <h2>柜中<em>物</em></h2>
+          <span class="en">Apothecary · 暖室</span>
+        </div>
+        <button class="open-btn" data-open="v2-apothecary.html" title="全屏打开">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11 L11 3 M5 3 H11 V9"/></svg>
+        </button>
+      </header>
+      <div class="desc">
+        奶油色 + <strong>陶土橙</strong> + 圆角柔和。像 Muji 笔记本/日杂账本，更生活化，适合作为常驻日用工具。
+        <div class="swatch-row" style="margin-top: 10px">
+          <span class="sw" style="background:#f5efe2"></span>
+          <span class="sw" style="background:#c45a3e"></span>
+          <span class="sw" style="background:#b8804a"></span>
+          <span class="sw" style="background:#7a8f6a"></span>
+          <span class="sw" style="background:#5a7596"></span>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="frame-wrap">
+          <iframe src="v2-apothecary.html" title="V2 暖室"></iframe>
+        </div>
+        <a class="preview-mask" href="v2-apothecary.html" target="_blank" rel="noopener" data-open="v2-apothecary.html">
+          <span class="cta">打开 V2 →</span>
+        </a>
+      </div>
+    </article>
+
+    <article class="card" data-v="v3">
+      <header class="card-head">
+        <div class="card-title">
+          <span class="label">V3 · 极致信息</span>
+          <h2>UPC<em>.terminal</em></h2>
+          <span class="en">Precision · 票据</span>
+        </div>
+        <button class="open-btn" data-open="v3-precision.html" title="全屏打开">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 11 L11 3 M5 3 H11 V9"/></svg>
+        </button>
+      </header>
+      <div class="desc">
+        纯白 + 等宽数字 + <strong>信号绿</strong>高亮。像 Linear / 财务终端的「省钱版」，信息密度最高，适合 power user。
+        <div class="swatch-row" style="margin-top: 10px">
+          <span class="sw" style="background:#fafaf9"></span>
+          <span class="sw" style="background:#0a0a0a"></span>
+          <span class="sw" style="background:#16a34a"></span>
+          <span class="sw" style="background:#2563eb"></span>
+          <span class="sw" style="background:#ea580c"></span>
+        </div>
+      </div>
+      <div class="preview">
+        <div class="frame-wrap">
+          <iframe src="v3-precision.html" title="V3 票据"></iframe>
+        </div>
+        <a class="preview-mask" href="v3-precision.html" target="_blank" rel="noopener" data-open="v3-precision.html">
+          <span class="cta">打开 V3 →</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div>
+      数据全部存在本地浏览器（localStorage），三个版本独立保存，互不影响。<br>
+      告诉我你最喜欢哪个方向，或者哪些细节想从一个版本搬到另一个 — 我可以继续打磨。
+    </div>
+    <div class="footer-right">
+      <span>3 VERSIONS</span>
+      <span>·</span>
+      <span>1 SHARED LOGIC</span>
+    </div>
+  </footer>
+
+  <div class="modal" id="modal">
+    <div class="modal-frame">
+      <iframe id="modalFrame" src="" title="full preview"></iframe>
+      <button class="modal-close" id="modalClose" title="关闭 (Esc)">×</button>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    const modalFrame = document.getElementById('modalFrame');
+    const modalClose = document.getElementById('modalClose');
+    function open(src) {
+      modalFrame.src = src;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      modal.classList.remove('open');
+      modalFrame.src = '';
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('[data-open]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        open(el.dataset.open);
+      });
+    });
+    modalClose.addEventListener('click', close);
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  </script>
+</body>
+</html>
