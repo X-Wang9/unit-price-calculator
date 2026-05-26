@@ -4,6 +4,13 @@ Category: Decision Making
 
 A lightweight single-page decision-making tool for comparing unit prices across purchase channels. It helps record product prices, base amount, bonus amount, total cost, inventory, usage pace, expiry, historical lows, and cart selections so the best buying option is easier to identify.
 
+## Live Demo
+
+- Main entry: https://x-wang9.github.io/unit-price-calculator/
+- Chinese / English switchable version: https://x-wang9.github.io/unit-price-calculator/v3-precision-bilingual.html
+- English version: https://x-wang9.github.io/unit-price-calculator/v3-precision-en.html
+- Chinese version: https://x-wang9.github.io/unit-price-calculator/v3-precision.html
+
 ## Versions
 
 - `v3-precision.html` - Chinese precision version.
@@ -25,6 +32,6 @@ A lightweight single-page decision-making tool for comparing unit prices across 
 
 ## How to Use
 
-Open `v3-precision-bilingual.html` in a browser for the latest switchable version, or use `v3-precision-en.html` for an English-only interface.
+Open the live demo link above, or open `v3-precision-bilingual.html` locally for the latest switchable version.
 
 All data is stored locally in the browser with `localStorage`; no server is required.
